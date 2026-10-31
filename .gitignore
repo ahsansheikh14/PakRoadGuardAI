@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data, results and models (too big for GitHub)
+data/
+datasets/
+runs/
+outputs/
+*.zip
+*.pt
+*.onnx
+*.engine
+*.tflite
+*_openvino_model/
+*_ncnn_model/
+*.mp4
+*.avi
+
+# Secrets
+kaggle.json
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
