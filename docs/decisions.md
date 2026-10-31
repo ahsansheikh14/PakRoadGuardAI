@@ -70,3 +70,19 @@ Note: "works without GPU" means RUNNING the model (inference). Training on a GPU
 
 Note: Kaggle's new `KGAT_...` token is a plain string, so it is saved as `~/.kaggle/access_token`, not `kaggle.json`. It is a secret and must never be committed.
 Note: `.venv` stops working if the folder is moved; recreate it if that happens.
+
+## 9. Data inspection findings (Step 2)
+We inspected the data on Kaggle before cleaning it, using file counts and sample images with their boxes drawn on.
+
+| Option | Why not / why |
+|---|---|
+| **Inspect first, then clean (chosen)** | Found problems that counts alone or the dataset descriptions would not have shown |
+| Write the cleaning code straight away | Faster, but would have relied on guesses about classes and scenes |
+
+| Dataset | What we found | What it means |
+|---|---|---|
+| BharatPotHole | 7,074 images, 12,221 boxes, one class. 89 of 93 test clips also appear in train | Its ready-made split leaks, so re-split by clip. Many potholes are tiny in the frame |
+| Mendeley | 713 images, 1,157 boxes, class 0. About 100 near-identical pairs. No ready-made split | Keep near-identical photos in the same part. Close-ups, unlike dashcam footage |
+| Zenodo | Only 484 unique pothole images. Pothole = class 2 (no class-name file; confirmed by eye). 0 accident, 1 fighting, 3 snatching, 4 fire | Much smaller than expected |
+| Zenodo copies | Most training images exist as 3 edited copies with noise or black-and-white effects | Keep copies together; they are not fair test images |
+| Zenodo sources | File names form about 4 sources (44, 55, 66, 77), roughly matching its 6 pothole videos. Only 44 and 55 looked like local street scenes in our sample sheet; 66 and 77 looked European, including what appears to be a vehicle test track | "Held-out Pakistani set" may not be accurate. Decision pending |

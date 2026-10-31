@@ -26,8 +26,8 @@ This matches the requirement to run on edge devices without a GPU.
 | # | Stage | Where | Goes in | Comes out | Status |
 |---|---|---|---|---|---|
 | 1 | Set up the project | Laptop | Nothing | Git, `.venv`, Kaggle access | done |
-| 2 | Inspect the datasets | Kaggle | 3 raw datasets | A report (counts, classes, clip overlap) | now |
-| 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset` with train, valid, test and a Pakistani test set | planned |
+| 2 | Inspect the datasets | Kaggle | 3 raw datasets | Reports and sample sheets (classes, overlap, label quality) | done |
+| 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset` with train, valid, test and a separate Zenodo test set | planned |
 | 4 | Train | Kaggle GPU | Prepared data + COCO weights | `best.pt`, curves, PR curve, confusion matrix | planned |
 | 5 | Compare | Kaggle GPU | Same data | YOLO11n vs YOLOv8n scores | planned |
 | 6 | Test | Kaggle or laptop | `best.pt` + test sets | Precision, recall, mAP50, mAP50-95 | planned |
@@ -45,8 +45,10 @@ This matches the requirement to run on edge devices without a GPU.
 | `.gitignore` | Tells Git what to skip | Keeps data, weights and secrets out of GitHub | Yes | done |
 | `docs/decisions.md` | What we chose and why | Answers "why this, why not that" | Yes | done |
 | `docs/flow.md` | This file | Shows how everything connects | Yes | done |
-| `kaggle/inspect_data/inspect_data.py` | Reads the datasets and prints a report | Shows the facts before we clean anything | Yes | now |
-| `kaggle/inspect_data/kernel-metadata.json` | Settings for that notebook | Tells Kaggle the GPU, internet, privacy and dataset settings | Yes | now |
+| `kaggle/inspect_data/inspect_data.py` | Reads the datasets and prints a report | Shows the facts before we clean anything | Yes | done |
+| `kaggle/inspect_data/kernel-metadata.json` | Settings for that notebook | Tells Kaggle the GPU, internet, privacy and dataset settings | Yes | done |
+| `kaggle/inspect_samples/inspect_samples.py` | Draws boxes on samples, finds near-duplicates, lists Zenodo images | Lets us check labels by eye and plan the split | Yes | done |
+| `kaggle/inspect_samples/kernel-metadata.json` | Settings for that notebook | Same purpose as above | Yes | done |
 | `kaggle/prepare_data/` | Cleans and splits the data | Produces the training and test sets | Yes | planned |
 | `kaggle/train/` | Trains the models | Produces `best.pt` | Yes | planned |
 | `scripts/` | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
