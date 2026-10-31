@@ -1,0 +1,78 @@
+# Project flow: how everything connects
+
+A plain guide to what each file does and how the work moves from raw data to the demo.
+Update this whenever a step adds or changes a file.
+
+Status: **done** = exists and worked, **now** = in progress, **planned** = not built yet.
+
+## The big picture
+
+```text
+LAPTOP (write code, give orders)          KAGGLE (do the heavy work)
+--------------------------------          --------------------------
+1. Write script + settings
+2. kaggle kernels push  ----------------> 3. Start a temporary computer
+                                          4. Attach data, run the script
+                                          5. Save output, shut down
+6. kaggle kernels output <--------------- (log, cleaned data, trained model)
+7. Test on CPU, run alerts and the demo
+```
+
+Training needs a GPU, so it happens on Kaggle. Using the model does not, so testing happens on the laptop.
+This matches the requirement to run on edge devices without a GPU.
+
+## The pipeline
+
+| # | Stage | Where | Goes in | Comes out | Status |
+|---|---|---|---|---|---|
+| 1 | Set up the project | Laptop | Nothing | Git, `.venv`, Kaggle access | done |
+| 2 | Inspect the datasets | Kaggle | 3 raw datasets | A report (counts, classes, clip overlap) | now |
+| 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset` with train, valid, test and a Pakistani test set | planned |
+| 4 | Train | Kaggle GPU | Prepared data + COCO weights | `best.pt`, curves, PR curve, confusion matrix | planned |
+| 5 | Compare | Kaggle GPU | Same data | YOLO11n vs YOLOv8n scores | planned |
+| 6 | Test | Kaggle or laptop | `best.pt` + test sets | Precision, recall, mAP50, mAP50-95 | planned |
+| 7 | Export | Kaggle or laptop | `best.pt` | ONNX, OpenVINO, NCNN files | planned |
+| 8 | Measure speed | Laptop CPU | ONNX, OpenVINO | ms per image, FPS | planned |
+| 9 | Build alerts | Laptop CPU | Video + model | Annotated video, `detections.csv`, `alerts.json`, snapshots | planned |
+| 10 | Score Ma'am's video | Laptop | Her video + our boxes | A separate score for her video | planned |
+| 11 | Build the demo | Laptop CPU | Model + results | Local web app with upload and benchmarks pages | planned |
+
+## What each file and folder is for
+
+| Path | What it does | Why we need it | On GitHub? | Status |
+|---|---|---|---|---|
+| `CLAUDE.md` | Project rules and plan | So Claude follows Ma'am's requirements | Yes | done |
+| `.gitignore` | Tells Git what to skip | Keeps data, weights and secrets out of GitHub | Yes | done |
+| `docs/decisions.md` | What we chose and why | Answers "why this, why not that" | Yes | done |
+| `docs/flow.md` | This file | Shows how everything connects | Yes | done |
+| `kaggle/inspect_data/inspect_data.py` | Reads the datasets and prints a report | Shows the facts before we clean anything | Yes | now |
+| `kaggle/inspect_data/kernel-metadata.json` | Settings for that notebook | Tells Kaggle the GPU, internet, privacy and dataset settings | Yes | now |
+| `kaggle/prepare_data/` | Cleans and splits the data | Produces the training and test sets | Yes | planned |
+| `kaggle/train/` | Trains the models | Produces `best.pt` | Yes | planned |
+| `scripts/` | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
+| `.venv/` | The project's private Python | Keeps packages separate from Python 3.14 | No | done |
+| `data/` | Local test videos and pictures | Inputs for testing on the laptop | No | done (empty) |
+| `runs/` | Logs and results from Kaggle | Keeps outputs out of the code | No | done |
+
+`~/.kaggle/access_token` is outside the project on purpose. It is a password and must never be committed.
+
+## How a video becomes alerts
+
+```text
+Video -> one frame -> model draws boxes -> tracker links boxes across frames
+      -> pothole seen in 5 of the last 8 frames? -> one alert with time and snapshot
+```
+
+The model only ever sees one picture at a time. The tracker and alert rule turn single-frame results into events.
+
+## Scoring Ma'am's video (required)
+
+Boxes from the model are its answers. To mark them, we need correct answers made by a person.
+
+1. Take frames from the video, for example 1 per second, since neighbouring frames are nearly identical.
+2. Draw a box on every pothole in those frames, in a labelling tool.
+3. Export the boxes in YOLO format.
+4. Run the model on those frames and compare its boxes with ours.
+5. Report this as a third score, separate from the other two test sets.
+
+Rule: frames used for scoring are never used for training. Otherwise the model has seen the exam.

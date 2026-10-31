@@ -1,5 +1,6 @@
 # Step 2, piece 1: look inside the three datasets and print a report.
 # This changes nothing. It runs on Kaggle, not on the laptop.
+import shutil
 import urllib.request
 import zipfile
 from collections import Counter
@@ -16,7 +17,9 @@ def download(url, name):
     """Save a file to the temporary folder, so it is not kept as notebook output."""
     path = TEMP / name
     print(f"Downloading {name} ...", flush=True)
-    urllib.request.urlretrieve(url, path)
+    request = urllib.request.Request(url, headers={"User-Agent": "PakRoadGuardAI-FYP/1.0"})
+    with urllib.request.urlopen(request) as response, open(path, "wb") as file:
+        shutil.copyfileobj(response, file)
     print(f"  {path.stat().st_size / 1e6:.0f} MB", flush=True)
     return path
 

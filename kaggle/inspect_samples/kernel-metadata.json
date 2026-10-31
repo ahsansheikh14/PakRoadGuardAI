@@ -1,0 +1,13 @@
+{
+  "id": "ahsansheikh14/pothole-inspect-samples",
+  "title": "pothole-inspect-samples",
+  "code_file": "inspect_samples.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["surbhisaswatimohanty/bharatpothole"],
+  "competition_sources": [],
+  "kernel_sources": []
+}
