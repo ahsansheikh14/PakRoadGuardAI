@@ -34,7 +34,14 @@ Goal: explain every part of this project to my supervisor without notes.
 - **Losses:** `box_loss`, `cls_loss` and `dfl_loss` measure mistakes; lower is better.
 - **The train lines:** Claude wrote `YOLO(...)` and `model.train(...)` at my request, so I should be able to explain every setting.
 
+- **Batch step:** forward pass, loss, backpropagation, then the optimizer updates the weights. About 407 steps per epoch.
+- **IoU:** how much the model's box overlaps the human box, from 0 (none) to 1 (exact).
+- **NMS:** removes duplicate boxes on one pothole and keeps the most confident one.
+- **mAP50 and mAP50-95:** an overall score. mAP50 needs IoU of at least 0.5; mAP50-95 averages stricter thresholds.
+- **Mosaic:** training pictures stitched from 4 images, so the model sees more variety.
+
 ### My questions
+- What does Kaggle do in each epoch, and what in `train.py` starts it?
 - What does `.pt` mean, and what changes in each epoch?
 - Will the model draw boxes on a new video by itself? Yes, after training.
 - Where is the model, and how is it trained?
