@@ -109,3 +109,27 @@ BharatPotHole split:
 | Random by frame | Even mix, but frames of one clip end up in both train and test, which is the leak we are removing |
 
 Sources 44 and 55 are kept in a separate folder, so we report one score on all 215 and one on the 82 local-looking images. We call the set "held-out Zenodo", not "Pakistani", because most of it does not look Pakistani.
+
+## 11. Label format and final data checks
+371 of BharatPotHole's 12,221 label lines (about 3%) were polygons, not boxes.
+
+| Option | Why not / why |
+|---|---|
+| **Convert polygons to boxes (chosen)** | Every label has the same format, so nothing depends on how YOLO reads a mix |
+| Leave them for YOLO | No new run, but relies on behaviour we have not tested |
+| Delete images with polygons | Loses real pothole data for no good reason |
+
+A folder count showed a file-naming bug: Zenodo copies overwrote each other (6,144 training images, not 6,512). We fixed it and added checks that the files on disk match `manifest.csv`, and that every label line is a plain box.
+
+Final dataset: 8,639 images. See `summary.csv`.
+
+## 12. Training settings (Step 4)
+| Choice | Chosen | Alternative | Why not the alternative |
+|---|---|---|---|
+| Model | YOLO11n | YOLO11s | More accurate but slower; CPU speed is a hard requirement |
+| Starting weights | COCO | Random | Would need far more data and time |
+| Image size | 640 | 960 | Might help tiny potholes, but much slower on a CPU |
+| Epochs | Up to 100 with early stopping | Fixed 300 | Wastes GPU hours and risks overfitting |
+| Batch | 16 | 32 | Needs more GPU memory; can try it if needed |
+
+`data.yaml` is written by `train.py` during the run, because `kaggle kernels push` sends only the one script.

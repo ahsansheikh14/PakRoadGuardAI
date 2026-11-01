@@ -25,6 +25,9 @@ Goal: explain every part of this project to my supervisor without notes.
 - **Perceptual hash:** a short fingerprint that is nearly the same for similar-looking pictures.
 - **Kaggle version:** one saved run of a notebook, created by each `kaggle kernels push`.
 
+- **Early stopping:** training stops by itself when the validation score stops improving, and the best weights are kept.
+- **`data.yaml`:** a settings file telling YOLO the dataset folder, the train and val image folders, and the class names. Claude wrote it at my request, so I should be able to explain each line.
+
 ### My questions
 - Will the model draw boxes on a new video by itself? Yes, after training.
 - Where is the model, and how is it trained?
