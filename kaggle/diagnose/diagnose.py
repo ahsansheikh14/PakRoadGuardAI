@@ -10,7 +10,7 @@ from pathlib import Path
 
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "ultralytics"], check=True)
 
-from PIL import Image
+from PIL import Image, ImageDraw
 from ultralytics import YOLO
 
 DATASET = Path("/tmp/pothole_dataset")
@@ -106,27 +106,65 @@ def found_by_size(model, dataset):
     return total, found
 
 
+# Return the video clip a BharatPotHole image came from.
+def clip_of(image):
+    return image.stem.removeprefix("bharat_").split("_frame_")[0]
+
+
+# Score every BharatPotHole validation clip, to see if one clip skews the result.
+def clip_report(model):
+    clips = {}
+    for image in images_of("valid", "bharat"):
+        clip = clips.setdefault(clip_of(image), Counter())
+        labels = read_boxes(image)
+        result = model.predict(str(image), imgsz=IMAGE_SIZE, conf=CONFIDENCE, verbose=False)[0]
+        predictions = result.boxes.xyxyn.cpu().numpy().tolist()
+        clip["images"] += 1
+        clip["boxes"] += len(labels)
+        clip["found"] += sum(any(iou(l, p) >= MATCH_IOU for p in predictions) for l in labels)
+        clip["predicted"] += len(predictions)
+        clip["correct"] += sum(any(iou(l, p) >= MATCH_IOU for l in labels) for p in predictions)
+
+    print(f"{'clip':<32}{'images':>7}{'boxes':>7}{'found':>7}{'predicted':>10}{'correct':>9}")
+    for name, c in sorted(clips.items(), key=lambda item: -item[1]["boxes"]):
+        print(f"{name:<32}{c['images']:>7}{c['boxes']:>7}{c['found']:>7}"
+              f"{c['predicted']:>10}{c['correct']:>9}")
+    return clips
+
+
+# Save a sheet from one clip: human labels in red, model boxes in green.
+def clip_sheet(model, clip, name, count=12, tile=480, columns=4):
+    images = [i for i in images_of("valid", "bharat") if clip_of(i) == clip and read_boxes(i)]
+    chosen = images[::max(1, len(images) // count)][:count]
+    rows = (len(chosen) + columns - 1) // columns
+    page = Image.new("RGB", (columns * tile, rows * tile), "white")
+    for i, path in enumerate(chosen):
+        image = Image.open(path).convert("RGB").resize((tile, tile))
+        draw = ImageDraw.Draw(image)
+        result = model.predict(str(path), imgsz=IMAGE_SIZE, conf=CONFIDENCE, verbose=False)[0]
+        for box in read_boxes(path):
+            draw.rectangle([v * tile for v in box], outline="red", width=2)
+        for box in result.boxes.xyxyn.cpu().numpy().tolist():
+            draw.rectangle([v * tile for v in box], outline="lime", width=2)
+        page.paste(image, ((i % columns) * tile, (i // columns) * tile))
+    page.save(OUTPUT / name, quality=85)
+
+
 unzip_dataset()
 model = YOLO(str(next(Path("/kaggle/input").rglob("best.pt"))))
 
-rows = []
-for dataset in ("bharat", "mendeley"):
-    scores = model.val(data=str(write_subset_yaml(dataset)), imgsz=IMAGE_SIZE, batch=16,
-                       plots=False, verbose=False, project="/tmp/val", name=dataset)
-    print(f"\n===== {dataset.upper()} VALIDATION =====")
-    print(f"precision {scores.box.mp:.3f}, recall {scores.box.mr:.3f}, "
-          f"mAP50 {scores.box.map50:.3f}, mAP50-95 {scores.box.map:.3f}", flush=True)
+clips = clip_report(model)
+largest = sorted(clips, key=lambda name: -clips[name]["boxes"])[:2]
+clip_sheet(model, largest[0], "clip_largest.jpg")
+clip_sheet(model, largest[1], "clip_second.jpg")
 
-    train_counts = training_sizes(dataset)
-    total, found = found_by_size(model, dataset)
-    print(f"{'size':<8}{'train boxes':>12}{'val boxes':>11}{'found':>7}{'recall':>8}")
-    for size in SIZE_NAMES:
-        recall = found[size] / total[size] if total[size] else 0
-        print(f"{size:<8}{train_counts[size]:>12}{total[size]:>11}{found[size]:>7}{recall:>8.2f}")
-        rows.append((dataset, size, train_counts[size], total[size], found[size], round(recall, 3)))
+rest = [c for name, c in clips.items() if name != largest[0]]
+boxes, found = sum(c["boxes"] for c in rest), sum(c["found"] for c in rest)
+print(f"\nWithout the largest clip: {found} of {boxes} found ({found / boxes:.2f})")
 
-with open(OUTPUT / "diagnosis.csv", "w", newline="") as file:
+with open(OUTPUT / "clips.csv", "w", newline="") as file:
     writer = csv.writer(file)
-    writer.writerow(["dataset", "size", "train_boxes", "val_boxes", "found", "recall"])
-    writer.writerows(rows)
+    writer.writerow(["clip", "images", "boxes", "found", "predicted", "correct"])
+    for name, c in clips.items():
+        writer.writerow([name, c["images"], c["boxes"], c["found"], c["predicted"], c["correct"]])
 print("\nDone.")
