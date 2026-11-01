@@ -55,6 +55,7 @@ check_setup()
 
 model = YOLO("yolo11n.pt")
 # save_period=1000 saves epoch0.pt only, because epoch 0 is the only multiple of 1000 we reach.
-model.train(data=str(DATASET / "data.yaml"), imgsz=640, epochs=EPOCHS, batch=16, patience=20,
-            save_period=1000, project=RESULTS, name="pothole_yolo11n")
+# time=1.75 stops training after 1 hour 45 minutes, even if epochs are left.
+model.train(data=str(DATASET / "data.yaml"), imgsz=960, epochs=EPOCHS, batch=16, patience=20,
+            save_period=1000, time=1.75, project=RESULTS, name="pothole_yolo11n_960")
 print("Done.")

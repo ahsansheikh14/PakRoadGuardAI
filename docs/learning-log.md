@@ -70,6 +70,10 @@ Goal: explain every part of this project to my supervisor without notes.
 - We train for 2 epochs first to check everything works before spending GPU hours on 100.
 - Falling `box_loss` is a good sign, but a 2-epoch score is too early for the report. Extra point to remember: those scores also come from validation images, and report scores must come from the test sets.
 
+### To review (I was unsure)
+- **Why size is not the only problem:** at the same medium size, the model found 57% on Mendeley but 9% on BharatPotHole, so something besides size must differ.
+- **Why one clip can mislead a score:** if one clip holds most boxes, the score mostly describes that one road. We checked: that clip found 6% and the others 5%, so it was not distorting the result.
+
 ### Problems my checks caught
 - Folder counts showed 6,144 training images, not 6,512, which exposed a file-naming bug.
 - An error while viewing labels revealed 371 polygon labels in BharatPotHole.

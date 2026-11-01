@@ -157,3 +157,11 @@ Share of labelled potholes found (confidence 0.25, IoU 0.5):
 Finding: size alone does not explain it. BharatPotHole is weak even on medium and large potholes, where Mendeley is much stronger. One clip holds 1,585 of its 2,519 validation boxes, so it needs checking. Fix decision pending.
 
 Per-clip check (confidence 0.25, IoU 0.5): the largest clip is not skewing the result. It found 96 of 1,585 boxes (6%), and all the other clips together found 48 of 934 (5%). When the model does draw a box on BharatPotHole, it is right in 158 of 285 cases (55%), so the main problem is missed potholes. Sample sheets show many labels are very small, faint or distant road marks in wide views.
+
+## 14. Image size: 640 vs 960
+| Option | Validation mAP50 | mAP50-95 | Precision | Recall | Why not / why |
+|---|---|---|---|---|---|
+| **YOLO11n at 640 (kept)** | 0.120 | 0.042 | 0.27 | 0.17 | Nearly the same accuracy and faster on a CPU |
+| YOLO11n at 960 | 0.125 | 0.048 | 0.25 | 0.19 | Barely better, took 1.7 hours, and slower on a CPU |
+
+Higher resolution did not solve the low score, which points to the data rather than image size. Better labels and data closer to our use case are the next step.
