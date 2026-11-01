@@ -1,0 +1,13 @@
+{
+  "id": "ahsansheikh14/pothole-diagnose",
+  "title": "pothole-diagnose",
+  "code_file": "diagnose.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": ["ahsansheikh14/pothole-prepare-data", "ahsansheikh14/pothole-train"]
+}

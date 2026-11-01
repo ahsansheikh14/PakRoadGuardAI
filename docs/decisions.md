@@ -133,3 +133,25 @@ Final dataset: 8,639 images. See `summary.csv`.
 | Batch | 16 | 32 | Needs more GPU memory; can try it if needed |
 
 `data.yaml` is written by `train.py` during the run, because `kaggle kernels push` sends only the one script.
+
+`save_period=1000` keeps `epoch0.pt`, `best.pt` and `last.pt`. Saving every epoch would use about 2.5 GB.
+
+## 13. First training result and diagnosis
+Full YOLO11n run: stopped early at epoch 42, best at epoch 22. Validation mAP50 0.12, mAP50-95 0.04, precision 0.27, recall 0.17. Not good enough to use yet.
+
+| Validation set | Precision | Recall | mAP50 | mAP50-95 |
+|---|---|---|---|---|
+| BharatPotHole | 0.240 | 0.155 | 0.096 | 0.028 |
+| Mendeley | 0.627 | 0.565 | 0.572 | 0.314 |
+
+BharatPotHole holds 95% of validation boxes, so it controls the overall score.
+
+Share of labelled potholes found (confidence 0.25, IoU 0.5):
+| Size at 640 | BharatPotHole | Mendeley |
+|---|---|---|
+| Tiny (under 16 px) | 8 of 510 (2%) | none |
+| Small (16 to 32 px) | 26 of 963 (3%) | 1 of 5 |
+| Medium (32 to 96 px) | 81 of 906 (9%) | 23 of 40 (57%) |
+| Large (over 96 px) | 29 of 140 (21%) | 44 of 74 (59%) |
+
+Finding: size alone does not explain it. BharatPotHole is weak even on medium and large potholes, where Mendeley is much stronger. One clip holds 1,585 of its 2,519 validation boxes, so it needs checking. Fix decision pending.

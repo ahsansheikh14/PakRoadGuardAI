@@ -28,7 +28,7 @@ This matches the requirement to run on edge devices without a GPU.
 | 1 | Set up the project | Laptop | Nothing | Git, `.venv`, Kaggle access | done |
 | 2 | Inspect the datasets | Kaggle | 3 raw datasets | Reports and sample sheets (classes, overlap, label quality) | done |
 | 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset.zip` (8,639 images), `manifest.csv`, `summary.csv` | done |
-| 4 | Train | Kaggle GPU | Prepared data + COCO weights | `best.pt`, curves, PR curve, confusion matrix | planned |
+| 4 | Train | Kaggle GPU | Prepared data + COCO weights | `best.pt`, curves, PR curve, confusion matrix | now (first run scored low; being diagnosed) |
 | 5 | Compare | Kaggle GPU | Same data | YOLO11n vs YOLOv8n scores | planned |
 | 6 | Test | Kaggle or laptop | `best.pt` + test sets | Precision, recall, mAP50, mAP50-95 | planned |
 | 7 | Export | Kaggle or laptop | `best.pt` | ONNX, OpenVINO, NCNN files | planned |
@@ -52,7 +52,10 @@ This matches the requirement to run on edge devices without a GPU.
 | `kaggle/prepare_data/prepare_data.py` | Cleans, splits and combines the three datasets | Produces the training and test sets | Yes | done |
 | `kaggle/prepare_data/kernel-metadata.json` | Settings for that notebook | GPU off, internet on, BharatPotHole attached | Yes | done |
 | `docs/learning-log.md` | What I learned, asked and got wrong | Helps me explain the project without notes | Yes | done |
-| `kaggle/train/` | Trains the models | Produces `best.pt` | Yes | planned |
+| `kaggle/train/train.py` | Installs YOLO, unzips the data, writes `data.yaml`, trains | Produces `best.pt` | Yes | done |
+| `kaggle/train/kernel-metadata.json` | Settings for that notebook | GPU on, internet on, dataset attached | Yes | done |
+| `kaggle/diagnose/diagnose.py` | Scores `best.pt` by dataset and pothole size | Shows why the score is low, using validation only | Yes | done |
+| `kaggle/diagnose/kernel-metadata.json` | Settings for that notebook | GPU on, dataset and `best.pt` attached | Yes | done |
 | `scripts/` | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
 | `.venv/` | The project's private Python | Keeps packages separate from Python 3.14 | No | done |
 | `data/` | Local test videos and pictures | Inputs for testing on the laptop | No | done (empty) |

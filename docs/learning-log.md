@@ -65,6 +65,8 @@ Goal: explain every part of this project to my supervisor without notes.
 
 ### What I got right
 - YOLO finds labels by replacing `images` with `labels` in the path, so `data.yaml` needs no labels line.
+- Training loss falling while validation stops improving suggests overfitting: the model is memorising.
+- We make decisions on validation so the test sets stay new and unseen until the end.
 - We train for 2 epochs first to check everything works before spending GPU hours on 100.
 - Falling `box_loss` is a good sign, but a 2-epoch score is too early for the report. Extra point to remember: those scores also come from validation images, and report scores must come from the test sets.
 
