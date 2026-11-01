@@ -13,8 +13,9 @@ TEMP = Path("/tmp/inspect")
 TEMP.mkdir(exist_ok=True)
 
 
+# Download a file into the temporary folder, so it is not kept as notebook output.
+# Our project name is sent as the User-Agent, because Mendeley refuses Python's default.
 def download(url, name):
-    """Save a file to the temporary folder, so it is not kept as notebook output."""
     path = TEMP / name
     print(f"Downloading {name} ...", flush=True)
     request = urllib.request.Request(url, headers={"User-Agent": "PakRoadGuardAI-FYP/1.0"})
@@ -24,11 +25,12 @@ def download(url, name):
     return path
 
 
+# Count the class number (first value) on each line of a YOLO label.
 def class_ids(lines):
-    """Count the class number (first value) on each line of a YOLO label."""
     return Counter(line.split()[0] for line in lines if line.strip())
 
 
+# BharatPotHole: print the classes, count images and boxes per part, and find shared clips.
 def inspect_bharat():
     print("\n===== BHARATPOTHOLE =====")
     yaml_file = next(Path("/kaggle/input").rglob("data.yaml"))
@@ -51,6 +53,7 @@ def inspect_bharat():
           f"valid+test {len(valid & test)}")
 
 
+# Look inside a zip without extracting it: file types, folders, and boxes per class.
 def inspect_zip(path, title, folder_depth):
     print(f"\n===== {title} =====")
     with zipfile.ZipFile(path) as archive:

@@ -27,7 +27,7 @@ This matches the requirement to run on edge devices without a GPU.
 |---|---|---|---|---|---|
 | 1 | Set up the project | Laptop | Nothing | Git, `.venv`, Kaggle access | done |
 | 2 | Inspect the datasets | Kaggle | 3 raw datasets | Reports and sample sheets (classes, overlap, label quality) | done |
-| 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset` with train, valid, test and a separate Zenodo test set | planned |
+| 3 | Prepare the data | Kaggle | 3 raw datasets | `pothole_dataset.zip` (8,639 images), `manifest.csv`, `summary.csv` | done |
 | 4 | Train | Kaggle GPU | Prepared data + COCO weights | `best.pt`, curves, PR curve, confusion matrix | planned |
 | 5 | Compare | Kaggle GPU | Same data | YOLO11n vs YOLOv8n scores | planned |
 | 6 | Test | Kaggle or laptop | `best.pt` + test sets | Precision, recall, mAP50, mAP50-95 | planned |
@@ -49,12 +49,16 @@ This matches the requirement to run on edge devices without a GPU.
 | `kaggle/inspect_data/kernel-metadata.json` | Settings for that notebook | Tells Kaggle the GPU, internet, privacy and dataset settings | Yes | done |
 | `kaggle/inspect_samples/inspect_samples.py` | Draws boxes on samples, finds near-duplicates, lists Zenodo images | Lets us check labels by eye and plan the split | Yes | done |
 | `kaggle/inspect_samples/kernel-metadata.json` | Settings for that notebook | Same purpose as above | Yes | done |
-| `kaggle/prepare_data/` | Cleans and splits the data | Produces the training and test sets | Yes | planned |
+| `kaggle/prepare_data/prepare_data.py` | Cleans, splits and combines the three datasets | Produces the training and test sets | Yes | done |
+| `kaggle/prepare_data/kernel-metadata.json` | Settings for that notebook | GPU off, internet on, BharatPotHole attached | Yes | done |
+| `docs/learning-log.md` | What I learned, asked and got wrong | Helps me explain the project without notes | Yes | done |
 | `kaggle/train/` | Trains the models | Produces `best.pt` | Yes | planned |
 | `scripts/` | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
 | `.venv/` | The project's private Python | Keeps packages separate from Python 3.14 | No | done |
 | `data/` | Local test videos and pictures | Inputs for testing on the laptop | No | done (empty) |
 | `runs/` | Logs and results from Kaggle | Keeps outputs out of the code | No | done |
+
+Note: the `data.yaml` inside `pothole_dataset.zip` is a placeholder. The real one is made in the training step.
 
 `~/.kaggle/access_token` is outside the project on purpose. It is a password and must never be committed.
 

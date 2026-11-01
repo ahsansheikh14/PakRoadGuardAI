@@ -85,4 +85,27 @@ We inspected the data on Kaggle before cleaning it, using file counts and sample
 | Mendeley | 713 images, 1,157 boxes, class 0. About 100 near-identical pairs. No ready-made split | Keep near-identical photos in the same part. Close-ups, unlike dashcam footage |
 | Zenodo | Only 484 unique pothole images. Pothole = class 2 (no class-name file; confirmed by eye). 0 accident, 1 fighting, 3 snatching, 4 fire | Much smaller than expected |
 | Zenodo copies | Most training images exist as 3 edited copies with noise or black-and-white effects | Keep copies together; they are not fair test images |
-| Zenodo sources | File names form about 4 sources (44, 55, 66, 77), roughly matching its 6 pothole videos. Only 44 and 55 looked like local street scenes in our sample sheet; 66 and 77 looked European, including what appears to be a vehicle test track | "Held-out Pakistani set" may not be accurate. Decision pending |
+| Zenodo sources | File names form about 4 sources (44, 55, 66, 77), roughly matching its 6 pothole videos. Only 44 and 55 looked like local street scenes in our sample sheet; 66 and 77 looked European, including what appears to be a vehicle test track | "Held-out Pakistani set" may not be accurate. Decision in section 10 |
+
+## 10. How we split the data
+| Dataset | Train | Validation | Test | Split by |
+|---|---|---|---|---|
+| BharatPotHole | 75% | 15% | 10% | Video clip |
+| Mendeley | 80% | 10% | 10% | Groups of near-identical photos |
+| Zenodo | Source 77 | None | Sources 44, 55, 66 | Source video |
+
+Zenodo options:
+| Option | Why not / why |
+|---|---|
+| **B: test on sources 44, 55, 66 (chosen by me)** | Larger test set (215 images, 44%), close to Ma'am's 60/40 plan |
+| A: test on sources 44, 55 only | Only local-looking scenes, but just 82 images |
+| C: test on sources 66, 77, train on 44, 55 | Trains on local scenes, but leaves no local test score |
+
+BharatPotHole split:
+| Option | Why not / why |
+|---|---|
+| **Stratified by clip (chosen)** | Clips with and without potholes are split separately, so each set gets a fair share and clips stay whole |
+| Random by clip | Tried first: only 7 pothole clips reached test, and just 27% of its images had potholes (63% in train) |
+| Random by frame | Even mix, but frames of one clip end up in both train and test, which is the leak we are removing |
+
+Sources 44 and 55 are kept in a separate folder, so we report one score on all 215 and one on the 82 local-looking images. We call the set "held-out Zenodo", not "Pakistani", because most of it does not look Pakistani.

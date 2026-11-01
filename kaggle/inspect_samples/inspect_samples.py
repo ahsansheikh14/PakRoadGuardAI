@@ -22,6 +22,7 @@ TILE = 320
 random.seed(42)
 
 
+# Download a file into the temporary folder and return its path.
 def download(url, name):
     path = TEMP / name
     print(f"Downloading {name} ...", flush=True)
@@ -31,8 +32,8 @@ def download(url, name):
     return path
 
 
+# Return one image tile with its YOLO boxes drawn in red.
 def draw_boxes(image_bytes, label_text):
-    """Return one image tile with its YOLO boxes drawn in red."""
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     width, height = image.size
     draw = ImageDraw.Draw(image)
@@ -46,8 +47,8 @@ def draw_boxes(image_bytes, label_text):
     return image.resize((TILE, TILE))
 
 
+# Paste image tiles into one picture and save it.
 def save_sheet(tiles, name, columns=4):
-    """Paste tiles into one picture."""
     rows = (len(tiles) + columns - 1) // columns
     sheet = Image.new("RGB", (columns * TILE, rows * TILE), "white")
     for i, tile in enumerate(tiles):
@@ -56,11 +57,12 @@ def save_sheet(tiles, name, columns=4):
     print("Saved", name)
 
 
+# Remove Roboflow's copy suffix: name_jpg.rf.abc123 becomes name.
 def base_name(stem):
-    """Remove Roboflow's copy suffix: name_jpg.rf.abc123 becomes name."""
     return re.sub(r"[_.]jpe?g$", "", re.sub(r"\.rf\..*$", "", stem), flags=re.I)
 
 
+# Zenodo: print counts and name patterns per class, and save a sample sheet for each class.
 def inspect_zenodo(path):
     print("\n===== ZENODO =====")
     with zipfile.ZipFile(path) as archive:
@@ -106,6 +108,7 @@ def inspect_zenodo(path):
             save_sheet(tiles, f"zenodo_class_{class_id}.jpg")
 
 
+# Mendeley: save a sheet of 8 random images with their boxes.
 def sheet_mendeley(path):
     with zipfile.ZipFile(path) as archive:
         chosen = random.sample(range(1, 714), 8)
@@ -114,6 +117,7 @@ def sheet_mendeley(path):
     save_sheet(tiles, "mendeley.jpg")
 
 
+# BharatPotHole: save a sheet of 8 random training images that have boxes.
 def sheet_bharat():
     root = next(Path("/kaggle/input").rglob("data.yaml")).parent
     with_boxes = [p for p in (root / "train" / "labels").glob("*.txt") if p.stat().st_size > 0]
@@ -124,8 +128,8 @@ def sheet_bharat():
     save_sheet(tiles, "bharat.jpg")
 
 
+# Make a 64-bit fingerprint of a picture. Similar-looking pictures get similar fingerprints.
 def dhash(image_bytes):
-    """A 64-bit fingerprint: similar-looking pictures get similar fingerprints."""
     small = Image.open(io.BytesIO(image_bytes)).convert("L").resize((9, 8))
     pixels = list(small.getdata())
     bits = 0
@@ -135,6 +139,7 @@ def dhash(image_bytes):
     return bits
 
 
+# Mendeley: count pairs of near-identical photos at three strictness levels.
 def mendeley_duplicates(path):
     print("\n===== MENDELEY NEAR-DUPLICATES =====")
     with zipfile.ZipFile(path) as archive:
@@ -145,6 +150,7 @@ def mendeley_duplicates(path):
         print(f"Pairs differing by {limit} bits or fewer: {len(pairs)}. Examples: {pairs[:10]}")
 
 
+# Zenodo: list every unique pothole image and save a sheet of samples in name order.
 def list_zenodo_potholes(path, pothole_class="2"):
     print("\n===== ZENODO POTHOLE IMAGES =====")
     with zipfile.ZipFile(path) as archive:

@@ -1,0 +1,13 @@
+{
+  "id": "ahsansheikh14/pothole-prepare-data",
+  "title": "pothole-prepare-data",
+  "code_file": "prepare_data.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["surbhisaswatimohanty/bharatpothole"],
+  "competition_sources": [],
+  "kernel_sources": []
+}
