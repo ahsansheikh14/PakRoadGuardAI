@@ -28,7 +28,14 @@ Goal: explain every part of this project to my supervisor without notes.
 - **Early stopping:** training stops by itself when the validation score stops improving, and the best weights are kept.
 - **`data.yaml`:** a settings file telling YOLO the dataset folder, the train and val image folders, and the class names. Claude wrote it at my request, so I should be able to explain each line.
 
+- **`.pt` file:** a saved PyTorch model. `yolo11n.pt` is the COCO starting point; `best.pt` is our trained result.
+- **`save_period`:** how often weights are saved. We use 1, meaning every epoch.
+- **Learning rate:** how big each weight adjustment is. It shrinks as training goes on.
+- **Losses:** `box_loss`, `cls_loss` and `dfl_loss` measure mistakes; lower is better.
+- **The train lines:** Claude wrote `YOLO(...)` and `model.train(...)` at my request, so I should be able to explain every setting.
+
 ### My questions
+- What does `.pt` mean, and what changes in each epoch?
 - Will the model draw boxes on a new video by itself? Yes, after training.
 - Where is the model, and how is it trained?
 - Do I have to label every frame? No, about 1 frame per second is enough.
@@ -45,6 +52,14 @@ Goal: explain every part of this project to my supervisor without notes.
 - **Why split by clip, not frame?** I said frames are similar, but missed the reason it matters: near-identical frames in both train and test cause leakage and inflate the score.
 - **What happens to a Zenodo line starting with 4?** I said it becomes class 0. It is deleted, because class 4 is vehicle fire. Only class 2 (pothole) is kept and changed to 0.
 - **Versions vs epochs:** I thought our code-fix cycle was epochs. Epochs happen inside one training run.
+
+- **Why can't `data.yaml` be its own file?** I said it is a direction to YOLO, which is true but not the reason. `kaggle kernels push` sends only one script, so the script must create the file during the run.
+- **Reusing a model:** a new `data.yaml` alone does not teach a new object. Detecting bikes needs new training on bike images, which gives a new `best.pt`.
+
+### What I got right
+- YOLO finds labels by replacing `images` with `labels` in the path, so `data.yaml` needs no labels line.
+- We train for 2 epochs first to check everything works before spending GPU hours on 100.
+- Falling `box_loss` is a good sign, but a 2-epoch score is too early for the report. Extra point to remember: those scores also come from validation images, and report scores must come from the test sets.
 
 ### Problems my checks caught
 - Folder counts showed 6,144 training images, not 6,512, which exposed a file-naming bug.

@@ -46,9 +46,19 @@ def download(url, name):
     return path
 
 
+# Return True if every box value is between 0 and 1, which YOLO requires.
+def label_is_valid(label_text):
+    return all(0 <= float(value) <= 1
+               for line in label_text.splitlines() for value in line.split()[1:])
+
+
 # Write one image and its label into a part of the final dataset, and record it in the
 # manifest. The dataset name goes in front of the file name, so names cannot clash.
+# Images with invalid labels are left out, because YOLO would ignore them anyway.
 def save(part, dataset, group, name, image_bytes, label_text):
+    if not label_is_valid(label_text):
+        print(f"Left out (box values outside 0 to 1): {part}, {dataset}, {name}")
+        return
     (DATASET / part / "images").mkdir(parents=True, exist_ok=True)
     (DATASET / part / "labels").mkdir(parents=True, exist_ok=True)
     stem = f"{dataset}_{Path(name).stem}"
@@ -283,13 +293,16 @@ def safety_checks():
     files = sum(1 for _ in DATASET.rglob("images/*.jpg"))
     print(f"Manifest rows minus files on disk (must be 0): {len(manifest) - files}")
 
-    bad_classes, bad_lines = 0, 0
+    bad_classes, bad_lines, bad_values = 0, 0, 0
     for label in DATASET.rglob("labels/*.txt"):
-        lines = [l.split() for l in label.read_text().splitlines() if l.strip()]
+        text = label.read_text()
+        lines = [l.split() for l in text.splitlines() if l.strip()]
         bad_classes += any(l[0] != "0" for l in lines)
         bad_lines += sum(len(l) != 5 for l in lines)
+        bad_values += not label_is_valid(text)
     print(f"Label files with a class other than 0 (must be 0): {bad_classes}")
     print(f"Label lines that are not plain boxes (must be 0): {bad_lines}")
+    print(f"Label files with values outside 0 to 1 (must be 0): {bad_values}")
 
     # The same picture must not sit in two sets, even under a different name.
     seen = defaultdict(set)
