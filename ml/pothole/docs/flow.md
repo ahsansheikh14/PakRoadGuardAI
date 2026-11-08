@@ -5,6 +5,8 @@ Update this whenever a step adds or changes a file.
 
 Status: **done** = exists and worked, **now** = in progress, **planned** = not built yet.
 
+Paths in this file are relative to `ml/pothole/`, unless a row says "repo root".
+
 ## The big picture
 
 ```text
@@ -56,9 +58,9 @@ This matches the requirement to run on edge devices without a GPU.
 | `kaggle/train/kernel-metadata.json` | Settings for that notebook | GPU on, internet on, dataset attached | Yes | done |
 | `kaggle/diagnose/diagnose.py` | Scores `best.pt` by dataset and pothole size | Shows why the score is low, using validation only | Yes | done |
 | `kaggle/diagnose/kernel-metadata.json` | Settings for that notebook | GPU on, dataset and `best.pt` attached | Yes | done |
-| `scripts/` | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
-| `.venv/` | The project's private Python | Keeps packages separate from Python 3.14 | No | done |
-| `data/` | Local test videos and pictures | Inputs for testing on the laptop | No | done (empty) |
+| `edge/` (repo root) | Laptop scripts: testing, speed, alerts | Work that runs on the CPU | Yes | planned |
+| `.venv/` (repo root) | The project's private Python | Keeps packages separate from Python 3.14 | No | done |
+| `data/` (repo root) | Local test videos and pictures | Inputs for testing on the laptop | No | done (empty) |
 | `runs/` | Logs and results from Kaggle | Keeps outputs out of the code | No | done |
 
 Note: the `data.yaml` inside `pothole_dataset.zip` is a placeholder. The real one is made in the training step.

@@ -19,6 +19,9 @@ outputs/
 *.mp4
 *.avi
 
+# JavaScript
+node_modules/
+
 # Secrets
 kaggle.json
 .env

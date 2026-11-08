@@ -74,6 +74,13 @@ Goal: explain every part of this project to my supervisor without notes.
 - **Why size is not the only problem:** at the same medium size, the model found 57% on Mendeley but 9% on BharatPotHole, so something besides size must differ.
 - **Why one clip can mislead a score:** if one clip holds most boxes, the score mostly describes that one road. We checked: that clip found 6% and the others 5%, so it was not distorting the result.
 
+### 2026-11-08: Monorepo reorganisation
+- **`git mv`:** moves a file and keeps its history connected. `git status` shows `R` (renamed).
+- **`git status` codes (right):** `R` moved and unchanged, `RM` moved then edited, ` M` edited in place.
+- **Why check before committing (didn't know):** Git keeps every version. Deleting a pushed file only hides it in new commits; the old ones still contain it. Removing it means rewriting history, and a leaked password must also be replaced.
+- **Empty folders:** Git tracks files, not folders, so each new folder needs a small file (we used `README.md`).
+- **Half right:** I said `/kaggle/input` paths didn't change because we only moved files. The real reason: those folders are on Kaggle's computer, not in the repo, so moving repo files can't affect them.
+
 ### Problems my checks caught
 - Folder counts showed 6,144 training images, not 6,512, which exposed a file-naming bug.
 - An error while viewing labels revealed 371 polygon labels in BharatPotHole.

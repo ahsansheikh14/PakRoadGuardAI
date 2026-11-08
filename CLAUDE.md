@@ -11,8 +11,9 @@ comfortable with MERN, Git and terminals.
    - the OTHER OPTIONS we could use, and why you recommend one of them.
 2. WAIT for me to say "go ahead" before writing code or running commands.
 3. Do the step in small pieces, explaining new terms as they appear.
-4. AFTER the step: summarise what was done and what the output means, then add an entry to
-   docs/decisions.md (what we chose, alternatives, why not them).
+4. AFTER the step: summarise what was done and what the output means, then add an entry to the
+   right decisions file (what we chose, alternatives, why not them): ml/pothole/docs/decisions.md for
+   pothole work, docs/decisions.md for project-wide choices.
 My guide will ask "why this, why not that" about every choice, so I must understand each one.
 
 ## Project
@@ -23,6 +24,14 @@ FYP "PakRoadGuardAI". Research direction from my guide (Ma'am Nida):
 - Model 1 (this weekend): POTHOLE DETECTION + ALERTS (bounding boxes, timestamps, one alert per pothole).
 - Model 2 (next): MOTORCYCLE DETECTION + TRACKING for green-belt crossing and wrong-way riding.
 - Two separate models (bike datasets have no pothole labels and vice versa).
+
+## Repo layout (monorepo)
+- ml/pothole/: all pothole work. kaggle/ (one folder per Kaggle notebook), docs/ (decisions, flow, learning log),
+  runs/ (Kaggle results, ignored by Git).
+- ml/helmet_triple/: Model 2, empty for now.
+- edge/ (run models on video, rules, alerts), backend/ (FastAPI), frontend/ (React): later.
+- models/: exported .onnx files. docs/: project-wide docs. data/: local videos and pictures (ignored by Git).
+- Push a Kaggle notebook from the repo root: kaggle kernels push -p ml/pothole/kaggle/<notebook>
 
 ## Hard requirements
 - Models must run on EDGE devices WITHOUT a GPU (laptop CPU, Raspberry Pi).
@@ -38,7 +47,7 @@ FYP "PakRoadGuardAI". Research direction from my guide (Ma'am Nida):
   remapped to class 0 "pothole".
 - Test: test splits of the training sets + held-out ~40% of Pakistan Road Anomaly (split by scene/source,
   not random frames, to avoid leakage).
-- Not used today (see docs/decisions.md): Bangladesh Road Damage (labels cracks as potholes),
+- Not used today (see ml/pothole/docs/decisions.md): Bangladesh Road Damage (labels cracks as potholes),
   RDD2022 (too large), IIT Goa mega dataset srajanchourasia/pothole-dataset (no boxes; later for severity S/A/B/C
   and background images), Roboflow 665 (backup only).
 
@@ -63,5 +72,6 @@ A small local web app, running on my laptop CPU with the exported ONNX/OpenVINO 
 
 ## Rules
 - Never commit data/, runs/, model weights, videos, or kaggle.json / any secret.
-- After every step, add an entry to docs/decisions.md: what we chose, alternatives, why not them.
+- After every step, add an entry to the right decisions file (ml/pothole/docs/decisions.md for pothole work,
+  docs/decisions.md for project-wide): what we chose, alternatives, why not them.
 - Keep scripts small and readable; I must be able to explain every line to my supervisor.
