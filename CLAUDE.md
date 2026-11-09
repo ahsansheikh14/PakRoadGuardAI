@@ -28,7 +28,9 @@ FYP "PakRoadGuardAI". Research direction from my guide (Ma'am Nida):
 ## Repo layout (monorepo)
 - ml/pothole/: all pothole work. kaggle/ (one folder per Kaggle notebook), docs/ (decisions, flow, learning log),
   runs/ (Kaggle results, ignored by Git).
-- ml/helmet_triple/: Model 2, empty for now.
+- ml/vehicle/: vehicle detector (Roboflow "Classification of Vehicles" v9). kaggle/vehicle_data (data check),
+  kaggle/train (training, not run yet).
+- ml/helmet_triple/: a separate model, empty for now (layout to be finalised later).
 - edge/ (run models on video, rules, alerts), backend/ (FastAPI), frontend/ (React): later.
 - models/: exported .onnx files. docs/: project-wide docs. data/: local videos and pictures (ignored by Git).
 - Push a Kaggle notebook from the repo root: kaggle kernels push -p ml/pothole/kaggle/<notebook>
@@ -50,6 +52,14 @@ FYP "PakRoadGuardAI". Research direction from my guide (Ma'am Nida):
 - Not used today (see ml/pothole/docs/decisions.md): Bangladesh Road Damage (labels cracks as potholes),
   RDD2022 (too large), IIT Goa mega dataset srajanchourasia/pothole-dataset (no boxes; later for severity S/A/B/C
   and background images), Roboflow 665 (backup only).
+
+## Vehicle model plan
+- MAIN model: YOLO26n (Ultralytics >= 8.4; faster on CPU, NMS-free). BASELINE: YOLO11n on the same data.
+- Model name is one setting: MODEL in ml/vehicle/kaggle/train/train.py.
+- Compare mAP50, mAP50-95 and CPU FPS in one table (docs/decisions.md, section 2).
+- Data: Roboflow labelme-to-darknet-yolo/classification-of-vehicles, version 9, 7 classes, CC BY 4.0,
+  downloaded on Kaggle with the ROBOFLOW_API_KEY secret.
+- The pothole model stays YOLO11n (already trained).
 
 ## Alerts (local, after training)
 - Track potholes across frames; alert only if seen in >= 5 of last 8 frames above a confidence threshold;

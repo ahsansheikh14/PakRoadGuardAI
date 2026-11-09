@@ -19,6 +19,9 @@ Note: "works without GPU" means RUNNING the model (inference). Training on a GPU
 | **YOLO11n (chosen)** | 2.6M parameters; about 56 ms per image on CPU with ONNX and 39.5 mAP on COCO, better than YOLOv8n on both (Ultralytics benchmark). Exports to ONNX, OpenVINO, NCNN, TFLite |
 | YOLOv8n | Older; 80 ms on CPU, 37.3 mAP. Trained as a comparison only |
 | YOLO11s | More accurate (47.0 mAP) but about 1.6x slower on CPU (90 ms); option if accuracy is too low |
+
+Note (2026-11-09): new models in this project use YOLO26n as the main model (see `docs/decisions.md`, section 2).
+The pothole model stays YOLO11n because it is already trained; YOLO26n could be compared later on the same data.
 | SSD-MobileNet / EfficientDet-Lite | Edge-friendly but older and usually less accurate; weaker training tooling |
 | Faster R-CNN, RT-DETR | Accurate but heavy; need a GPU for real-time use, which breaks the edge requirement |
 
