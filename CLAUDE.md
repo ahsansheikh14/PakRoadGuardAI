@@ -54,9 +54,11 @@ FYP "PakRoadGuardAI". Research direction from my guide (Ma'am Nida):
   and background images), Roboflow 665 (backup only).
 
 ## Vehicle model plan
-- MAIN model: YOLO26n (Ultralytics >= 8.4; faster on CPU, NMS-free). BASELINE: YOLO11n on the same data.
+- Model: YOLO26n only (Ultralytics >= 8.4; faster on CPU, NMS-free). No YOLO11n baseline (decided 2026-11-10).
 - Model name is one setting: MODEL in ml/vehicle/kaggle/train/train.py.
-- Compare mAP50, mAP50-95 and CPU FPS in one table (docs/decisions.md, section 2).
+- Report YOLO26n's mAP50, mAP50-95 and CPU FPS (docs/decisions.md, section 2).
+- Training uses the clean, leak-free split from the vehicle-prepare notebook (vehicle_dataset.zip), not
+  Roboflow's original split. See ml/vehicle/docs/decisions.md.
 - Data: Roboflow labelme-to-darknet-yolo/classification-of-vehicles, version 9, 7 classes, CC BY 4.0,
   downloaded on Kaggle with the ROBOFLOW_API_KEY secret.
 - The pothole model stays YOLO11n (already trained).

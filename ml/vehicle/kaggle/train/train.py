@@ -1,48 +1,51 @@
-# Train the vehicle detector on Kaggle's GPU. NOT pushed or run yet.
-# Switch between the main model and the baseline by changing MODEL only.
+# Train the vehicle detector (YOLO26n) on Kaggle's GPU.
+# The clean, leak-free dataset comes from the vehicle-prepare notebook, attached as kernel_sources,
+# so no Roboflow secret is needed and the notebook can be pushed and run from the terminal.
 import subprocess
 import sys
+import zipfile
+from pathlib import Path
 
-# Kaggle's computer starts fresh, so install (or upgrade) the libraries first.
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "ultralytics", "roboflow"],
-               check=True)
+# Kaggle's computer starts fresh, so install (or upgrade) Ultralytics first.
+subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "ultralytics"], check=True)
 
 import torch
 import ultralytics
 from ultralytics import YOLO
 
-MODEL = "yolo26n.pt"  # main model; change to "yolo11n.pt" for the baseline
-EPOCHS = 100          # the most it can run; early stopping can end it sooner
-IMAGE_SIZE = 640
-DATASET = "/tmp/vehicles_v9"
+MODEL = "yolo26n.pt"        # the model we train
+EPOCHS = 2                  # short test run; the full run uses 100
+TRAIN_IMAGES = 7419         # from class_counts / manifest of vehicle-prepare
+DATASET = Path("/tmp/vehicle_dataset")
 RESULTS = "/kaggle/working/runs"
 
 
-# Print the versions, and stop if Ultralytics is too old to know YOLO26 (added in 8.4.0).
-def check_versions():
+# Find vehicle_dataset.zip from vehicle-prepare and unpack it into the temporary folder.
+def unzip_dataset():
+    zip_path = next(Path("/kaggle/input").rglob("vehicle_dataset.zip"))
+    print("Unzipping", zip_path, flush=True)
+    with zipfile.ZipFile(zip_path) as archive:
+        archive.extractall(DATASET)
+
+
+# Stop early, before wasting GPU time, if anything is not as expected.
+def check_setup():
     print("Ultralytics version:", ultralytics.__version__)
-    print("GPU available:", torch.cuda.is_available())
     major, minor = (int(part) for part in ultralytics.__version__.split(".")[:2])
     if (major, minor) < (8, 4):
         raise SystemExit("Stopping: YOLO26 needs Ultralytics 8.4 or newer.")
 
-
-# Download version 9 of the vehicle dataset from Roboflow. The API key is never printed.
-def download_dataset():
-    from kaggle_secrets import UserSecretsClient
-    from roboflow import Roboflow
-
-    api_key = UserSecretsClient().get_secret("ROBOFLOW_API_KEY")
-    project = Roboflow(api_key=api_key).workspace("labelme-to-darknet-yolo") \
-                                       .project("classification-of-vehicles")
-    return project.version(9).download("yolov11", location=DATASET).location
+    images = sum(1 for _ in (DATASET / "train" / "images").glob("*"))
+    print("GPU available:", torch.cuda.is_available())
+    print("Training images:", images, flush=True)
+    if not torch.cuda.is_available() or images != TRAIN_IMAGES:
+        raise SystemExit(f"Stopping: expected a GPU and {TRAIN_IMAGES} training images.")
 
 
-check_versions()
-location = download_dataset()
+unzip_dataset()
+check_setup()
 
-# Before the first real run: check the data.yaml paths printed by the vehicle-data notebook.
 model = YOLO(MODEL)
-model.train(data=f"{location}/data.yaml", imgsz=IMAGE_SIZE, epochs=EPOCHS, batch=16, patience=20,
-            project=RESULTS, name=MODEL.removesuffix(".pt"))
+model.train(data=str(DATASET / "data.yaml"), imgsz=640, epochs=EPOCHS, batch=16, patience=20,
+            project=RESULTS, name="vehicle_yolo26n")
 print("Done.")
