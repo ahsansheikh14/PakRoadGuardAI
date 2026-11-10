@@ -25,6 +25,6 @@ The speed-up is Ultralytics' benchmark, not our own measurement. We will measure
 
 | Model | mAP50 | mAP50-95 | CPU FPS (ONNX) | CPU FPS (OpenVINO) |
 |---|---|---|---|---|
-| YOLO26n | | | | |
+| YOLO26n (vehicle, test set) | 0.909 | 0.696 | | |
 
 The model name is one setting in `ml/vehicle/kaggle/train/train.py`: `MODEL = "yolo26n.pt"`.

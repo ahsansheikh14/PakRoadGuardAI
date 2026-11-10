@@ -52,3 +52,51 @@ It stays on Kaggle.
 
 ## 4. Model
 YOLO26n only; see `docs/decisions.md`, section 2.
+
+## 5. Polygon labels
+The 2-epoch test showed YOLO ignored 2 training images whose labels mixed polygons and boxes, and dropped 7 polygon
+outlines. `vehicle-prepare` now turns each polygon into the smallest box around it (9 lines converted) and checks that
+every label line is a plain box.
+
+| Option | Why not / why |
+|---|---|
+| **Fix in vehicle-prepare (chosen)** | The dataset zip itself is clean, so every later run uses the same labels |
+| Fix in train.py at unzip time | No browser step, but the zip would stay imperfect |
+
+## 6. Training result (validation)
+`vehicle-train` version 2: YOLO26n, 640 px, batch 16, up to 100 epochs, patience 20. Early stopping ended it at
+epoch 93; the best was epoch 73. It took 2.2 hours on a Tesla T4. 0 corrupt images.
+
+| Class | Precision | Recall | mAP50 | mAP50-95 |
+|---|---|---|---|---|
+| **All** | 0.882 | 0.851 | 0.918 | 0.696 |
+| Bike | 0.864 | 0.758 | 0.861 | 0.512 |
+| Bus | 0.917 | 0.862 | 0.922 | 0.733 |
+| Car | 0.858 | 0.846 | 0.920 | 0.678 |
+| Hiace | 0.901 | 0.885 | 0.926 | 0.822 |
+| Rickshaw | 0.861 | 0.885 | 0.942 | 0.726 |
+| Tractor | 0.928 | 0.876 | 0.926 | 0.672 |
+| Truck | 0.848 | 0.846 | 0.926 | 0.727 |
+
+Validation loss flattened from about epoch 60 without rising, so there was no clear overfitting. The confusion matrix
+shows few mix-ups between classes (largest: some buses called trucks); most mistakes are extra boxes on background,
+mainly Car and Bike. Bike is the weakest class: it misses about 1 in 4 bikes and its boxes are the least tight.
+These are validation scores; the report uses the test set (section 7).
+
+## 7. Test result (official, run once)
+`vehicle-test` version 1 scored `best.pt` once on the 970 test images (2,149 boxes) that were never used for training
+or for choosing the model. 0 corrupt images.
+
+| Class | Precision | Recall | mAP50 | mAP50-95 |
+|---|---|---|---|---|
+| **All** | 0.867 | 0.844 | 0.909 | 0.696 |
+| Bike | 0.825 | 0.783 | 0.857 | 0.510 |
+| Bus | 0.937 | 0.848 | 0.928 | 0.751 |
+| Car | 0.857 | 0.861 | 0.930 | 0.691 |
+| Hiace | 0.917 | 0.866 | 0.932 | 0.836 |
+| Rickshaw | 0.806 | 0.871 | 0.913 | 0.711 |
+| Tractor | 0.893 | 0.884 | 0.921 | 0.693 |
+| Truck | 0.831 | 0.796 | 0.880 | 0.682 |
+
+Test scores are close to validation (mAP50 0.909 vs 0.918; mAP50-95 0.696 vs 0.696), so the model generalises and the
+leak-free split worked. Bike remains the weakest class. Speed in this log (4.4 ms) is Kaggle GPU, not CPU.
