@@ -14,7 +14,7 @@ import ultralytics
 from ultralytics import YOLO
 
 MODEL = "yolo26n.pt"        # the model we train
-EPOCHS = 2                  # short test run; the full run uses 100
+EPOCHS = 100                # the most it can run; early stopping (patience=20) can end it sooner
 TRAIN_IMAGES = 7419         # from class_counts / manifest of vehicle-prepare
 DATASET = Path("/tmp/vehicle_dataset")
 RESULTS = "/kaggle/working/runs"
