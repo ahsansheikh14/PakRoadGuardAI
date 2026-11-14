@@ -25,6 +25,9 @@ The speed-up is Ultralytics' benchmark, not our own measurement. We will measure
 
 | Model | mAP50 | mAP50-95 | CPU FPS (ONNX) | CPU FPS (OpenVINO) |
 |---|---|---|---|---|
-| YOLO26n (vehicle, test set) | 0.909 | 0.696 | | |
+| YOLO26n (vehicle, test set) | 0.909 | 0.696 | 7.7 (130 ms) | not measured yet |
+
+CPU speed measured on our laptop (Intel Core i5-8365U, 4 cores, no GPU) with `edge/benchmark/cpu_speed.py`:
+640 px, 100 timed runs after 10 warm-up runs. PyTorch `best.pt` ran at 5.1 FPS (196 ms); ONNX is about 1.5x faster.
 
 The model name is one setting in `ml/vehicle/kaggle/train/train.py`: `MODEL = "yolo26n.pt"`.

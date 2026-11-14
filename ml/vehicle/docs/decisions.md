@@ -100,3 +100,21 @@ or for choosing the model. 0 corrupt images.
 
 Test scores are close to validation (mAP50 0.909 vs 0.918; mAP50-95 0.696 vs 0.696), so the model generalises and the
 leak-free split worked. Bike remains the weakest class. Speed in this log (4.4 ms) is Kaggle GPU, not CPU.
+
+## 8. CPU speed on the laptop
+`edge/benchmark/cpu_speed.py` exported `best.pt` to ONNX (`models/vehicle_yolo26n.onnx`, 9.4 MB, not on GitHub)
+and timed 100 runs on one picture after 10 warm-up runs, on an Intel Core i5-8365U (4 cores, no GPU).
+
+| Format | Preprocess | Inference | Postprocess | Total | FPS |
+|---|---|---|---|---|---|
+| PyTorch `best.pt` | 6.2 ms | 180.2 ms | 2.5 ms | 196.4 ms | 5.1 |
+| **ONNX (chosen)** | 10.0 ms | 108.0 ms | 3.0 ms | 130.0 ms | **7.7** |
+
+| Option | Why not / why |
+|---|---|
+| **ONNX Runtime (chosen for now)** | About 1.5x faster than PyTorch on our CPU, small, runs anywhere |
+| PyTorch `.pt` | Slowest, and needs the large PyTorch library on the device |
+| OpenVINO | Built for Intel CPUs, likely faster still; to be measured next |
+
+At 7.7 FPS the model can check about every 4th frame of a 30 FPS video. Ultralytics' published 38.9 ms is on a faster
+server CPU, so our laptop is slower, as expected.
