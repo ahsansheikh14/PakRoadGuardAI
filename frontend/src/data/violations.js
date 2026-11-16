@@ -12,8 +12,36 @@ export const violations = [
 ]
 
 // Names shown on screen for each type. `short` is used in tables, `long` in headings.
+// rule: when the edge device raises it. seen / notSeen: legend under the frame strip.
 export const violationTypes = {
-  'no-helmet': { short: 'No helmet', long: 'No helmet' },
-  'wrong-way': { short: 'Wrong-way', long: 'Wrong-way driving' },
-  'triple-riding': { short: 'Triple riding', long: 'Triple riding' },
+  'no-helmet': {
+    short: 'No helmet',
+    long: 'No helmet',
+    rule: 'Rider without helmet in ≥ 5 of 8 frames',
+    seen: 'no helmet seen',
+    notSeen: 'head not visible',
+  },
+  'wrong-way': {
+    short: 'Wrong-way',
+    long: 'Wrong-way driving',
+    rule: 'Against the zone arrow in ≥ 5 of 8 frames',
+    seen: 'moving the wrong way',
+    notSeen: 'direction unclear',
+  },
+  'triple-riding': {
+    short: 'Triple riding',
+    long: 'Triple riding',
+    rule: '≥ 3 riders in ≥ 5 of 8 frames',
+    seen: '3+ riders seen',
+    notSeen: 'fewer seen (occluded)',
+  },
 }
+
+// Choices for "Reason (needed when rejecting)".
+export const rejectReasons = [
+  'Not a violation',
+  'Helmet visible in other frames',
+  'Wrong vehicle tracked',
+  'Image too unclear',
+  'Duplicate of another alert',
+]

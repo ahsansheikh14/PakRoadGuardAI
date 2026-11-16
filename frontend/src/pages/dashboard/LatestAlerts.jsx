@@ -17,7 +17,7 @@ export default function LatestAlerts({ alerts }) {
   return (
     <Card className="mt-[25px] px-5 pt-[17px] pb-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-[17px] leading-6 font-semibold">Latest alerts</h2>
+        <h2 className="text-[16px] leading-6 font-semibold">Latest alerts</h2>
         <Link to="/violations" className="text-[14px] text-link underline">
           See all
         </Link>

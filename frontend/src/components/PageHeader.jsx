@@ -4,7 +4,7 @@ export default function PageHeader({ title, children, actions, actionsClassName 
   return (
     <header className="flex items-start justify-between gap-6">
       <div>
-        <h1 className="font-display text-[28px] leading-9 font-semibold tracking-[-0.01em]">
+        <h1 className="font-display text-[28px] leading-9 font-medium">
           {title}
         </h1>
         {children && <p className="mt-0.5 text-[14px] text-slate-600">{children}</p>}

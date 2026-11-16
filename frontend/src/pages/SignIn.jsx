@@ -25,7 +25,7 @@ function IntroPanel() {
       <Logo size="large" />
 
       <div className="flex flex-1 flex-col justify-center">
-        <h1 className="max-w-[500px] font-display text-[45px] leading-[48px] font-semibold tracking-[-0.01em] text-white">
+        <h1 className="max-w-[500px] font-display text-[44px] leading-[48px] font-semibold text-white">
           Road safety analytics that run on the roadside, not in the cloud.
         </h1>
         <p className="mt-6 max-w-[540px] text-[17px] leading-[27px] text-[#b6c3d6]">
@@ -69,7 +69,7 @@ function SignInForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-[400px]">
-      <h2 className="font-display text-[28px] leading-9 font-semibold tracking-[-0.01em]">Sign in</h2>
+      <h2 className="font-display text-[28px] leading-9 font-medium">Sign in</h2>
       <p className="mt-1 text-[15px] text-slate-600">
         Use the account your administrator created for you.
       </p>

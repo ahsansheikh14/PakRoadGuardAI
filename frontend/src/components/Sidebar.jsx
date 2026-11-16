@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getSummary } from '../api'
 import { useRole } from '../auth/RoleContext'
 import { useApi } from '../hooks/useApi'
@@ -15,8 +15,11 @@ const links = [
 ]
 
 export default function Sidebar() {
-  const { role } = useRole()
-  const { data: summary } = useApi(getSummary)
+  const { role, signOut } = useRole()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  // Load the badge again on every page change, so it drops after a decision.
+  const { data: summary } = useApi(getSummary, [pathname])
   const visible = links.filter((link) => !link.adminOnly || role.id === 'admin')
 
   return (
@@ -51,6 +54,16 @@ export default function Sidebar() {
       <div className="mt-auto border-t border-sidebar-line px-3 pt-3.5 text-[13px] leading-4">
         <span className="text-slate-400">Signed in as </span>
         <span className="text-white">{role.label}</span>
+        <button
+          type="button"
+          onClick={() => {
+            signOut()
+            navigate('/sign-in')
+          }}
+          className="mt-2 block text-slate-400 underline hover:text-white"
+        >
+          Sign out
+        </button>
       </div>
     </aside>
   )

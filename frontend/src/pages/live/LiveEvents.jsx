@@ -6,7 +6,7 @@ export default function LiveEvents({ events }) {
   return (
     <Card className="self-start px-[18px] pt-[17px] pb-[18px]">
       <div className="flex items-center justify-between">
-        <h2 className="text-[17px] leading-6 font-semibold">Live events</h2>
+        <h2 className="text-[16px] leading-6 font-semibold">Live events</h2>
         <SampleTag className="text-[12px]" />
       </div>
 

@@ -10,7 +10,7 @@ const typeNames = [
 export default function TypeBreakdown({ byType, total, vehicleMix }) {
   return (
     <Card className="px-5 pt-[17px] pb-5">
-      <h2 className="text-[17px] leading-6 font-semibold">By violation type</h2>
+      <h2 className="text-[16px] leading-6 font-semibold">By violation type</h2>
       <ul className="mt-3 space-y-3">
         {typeNames.map(([type, name]) => (
           <li key={type}>
@@ -28,7 +28,7 @@ export default function TypeBreakdown({ byType, total, vehicleMix }) {
         ))}
       </ul>
 
-      <h2 className="mt-[22px] text-[17px] leading-6 font-semibold">Vehicle mix</h2>
+      <h2 className="mt-[22px] text-[16px] leading-6 font-semibold">Vehicle mix</h2>
       <ul className="mt-[14px] flex flex-wrap gap-2">
         {vehicleMix.map((item) => (
           <li key={item.label} className="rounded-full bg-track px-2.5 py-1 text-[13px] leading-[19px]">

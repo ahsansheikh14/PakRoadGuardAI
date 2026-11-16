@@ -11,7 +11,7 @@ export default function HourlyChart({ firstHour, counts }) {
   return (
     <Card className="px-5 pt-[17px] pb-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-[17px] leading-6 font-semibold">Violations by hour</h2>
+        <h2 className="text-[16px] leading-6 font-semibold">Violations by hour</h2>
         <span className="text-[13px] text-slate-500">Today</span>
       </div>
 
