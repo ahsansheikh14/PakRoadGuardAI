@@ -1,5 +1,6 @@
 // Page title, one line of description, and optional controls on the right.
-export default function PageHeader({ title, children, actions }) {
+// `actionsClassName` moves the controls down to line up with the design (default 12px).
+export default function PageHeader({ title, children, actions, actionsClassName = 'mt-3' }) {
   return (
     <header className="flex items-start justify-between gap-6">
       <div>
@@ -8,7 +9,9 @@ export default function PageHeader({ title, children, actions }) {
         </h1>
         {children && <p className="mt-0.5 text-[14px] text-slate-600">{children}</p>}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className={`flex shrink-0 items-center gap-2 ${actionsClassName}`}>{actions}</div>
+      )}
     </header>
   )
 }

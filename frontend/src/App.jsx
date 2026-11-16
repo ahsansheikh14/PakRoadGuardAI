@@ -2,7 +2,10 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { RoleProvider } from './auth/RoleContext'
 import RequireRole from './auth/RequireRole'
 import AppLayout from './components/AppLayout'
+import Dashboard from './pages/Dashboard'
+import LiveMonitoring from './pages/LiveMonitoring'
 import Placeholder from './pages/Placeholder'
+import Violations from './pages/Violations'
 import SignIn from './pages/SignIn'
 
 export default function App() {
@@ -20,9 +23,9 @@ export default function App() {
             }
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Placeholder title="Dashboard" />} />
-            <Route path="live" element={<Placeholder title="Live monitoring" />} />
-            <Route path="violations" element={<Placeholder title="Violations review queue" />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="live" element={<LiveMonitoring />} />
+            <Route path="violations" element={<Violations />} />
             <Route path="violations/:id" element={<Placeholder title="Violation" />} />
             <Route
               path="cameras"

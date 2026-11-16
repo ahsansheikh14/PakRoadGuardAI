@@ -1,0 +1,43 @@
+// The four edge cameras. `short` is the name used in tables, `place` the full name.
+export const cameras = [
+  {
+    id: 'CAM-01',
+    short: 'Srinagar Hwy',
+    place: 'Srinagar Highway footbridge',
+    online: true,
+    fps: 15,
+    cpu: 58,
+    model: 'YOLO26n v1.0',
+    heartbeat: '20 s ago',
+    queued: 0,
+  },
+  {
+    id: 'CAM-02',
+    short: 'H-11 slip road',
+    place: 'H-11 slip road',
+    online: true,
+    fps: 14,
+    cpu: 61,
+    model: 'YOLO26n v1.0',
+    heartbeat: '12 s ago',
+    queued: 0,
+  },
+  {
+    id: 'CAM-03',
+    short: 'G-9 Markaz',
+    place: 'G-9 Markaz',
+    online: true,
+    fps: 12,
+    cpu: 72,
+    model: 'YOLO26n v1.0',
+    heartbeat: '31 s ago',
+    queued: 2,
+  },
+  {
+    id: 'CAM-04',
+    short: 'Peshawar Mor',
+    place: 'Kashmir Highway, Peshawar Mor',
+    online: false,
+    offlineSince: '09:12',
+  },
+]
