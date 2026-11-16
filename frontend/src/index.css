@@ -4,20 +4,26 @@
 @import '@fontsource/space-grotesk/700.css';
 @import 'tailwindcss';
 
-/* Design tokens taken from frontend/design/PakRoadGuardAI UI.pdf */
+/*
+  Design tokens measured from frontend/design/PakRoadGuardAI UI.pdf
+  (screenshots of a 1440px wide screen).
+*/
 @theme {
   --font-sans: 'Inter Variable', system-ui, sans-serif;
   --font-display: 'Space Grotesk', 'Inter Variable', sans-serif;
 
-  --color-ink: #0f172a;        /* sidebar, headings */
-  --color-page: #f4f5f8;       /* page background */
-  --color-line: #e5e7eb;       /* card borders */
-  --color-navy: #1e3a8a;       /* primary buttons, bars */
-  --color-navy-dark: #1a3278;
-  --color-amber: #f5a524;      /* logo, highlights */
-  --color-link: #1d4ed8;
+  --color-sidebar: #0f1a2c;        /* sidebar and sign-in left panel */
+  --color-sidebar-active: #1e2c45; /* selected menu item */
+  --color-sidebar-line: #243144;   /* divider above "Signed in as" */
+  --color-page: #f5f6fa;           /* page background */
+  --color-line: #e5e8ee;           /* card and input borders */
+  --color-track: #eef1f6;          /* empty part of progress bars, grey chips */
+  --color-navy: #1e3b8b;           /* primary buttons, chart bars */
+  --color-navy-dark: #172f70;      /* primary button hover */
+  --color-amber: #f5a524;          /* logo, badges, highlighted bars */
+  --color-link: #1d4ed8;           /* underlined links */
 }
 
 body {
-  @apply bg-page font-sans text-ink antialiased;
+  @apply bg-page font-sans text-slate-900 antialiased;
 }

@@ -1,4 +1,28 @@
+# Dependencies (reinstall with npm install)
 node_modules/
+
+# Build output
 dist/
+.vite/
+
+# Secrets and local settings (keep an example file if one is added)
 .env
 .env.*
+!.env.example
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# The root .gitignore ignores every "data/" folder (for ML datasets).
+# Our sample data is small source code, so include it again.
+!src/data/
