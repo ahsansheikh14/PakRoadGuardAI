@@ -1,0 +1,23 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import 'tailwindcss';
+
+/* Design tokens taken from frontend/design/PakRoadGuardAI UI.pdf */
+@theme {
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter Variable', sans-serif;
+
+  --color-ink: #0f172a;        /* sidebar, headings */
+  --color-page: #f4f5f8;       /* page background */
+  --color-line: #e5e7eb;       /* card borders */
+  --color-navy: #1e3a8a;       /* primary buttons, bars */
+  --color-navy-dark: #1a3278;
+  --color-amber: #f5a524;      /* logo, highlights */
+  --color-link: #1d4ed8;
+}
+
+body {
+  @apply bg-page font-sans text-ink antialiased;
+}
